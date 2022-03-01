@@ -27,4 +27,40 @@ class FormController extends Controller
             'data_student' => $student
         ], 200);
     }
+
+    public function edit($id)
+    {
+        $student = Student::find($id);
+        return response()->json([
+            'message' => 'success',
+            'data_student' => $student
+        ], 200);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $student = Student::find($id);
+        $request->validate([
+            'nama' => 'required',
+            'alamat' => 'required',
+            'no_telp' => 'required'
+        ]);
+        $student->update([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'no_telp' => $request->no_telp
+        ]);
+        return response()->json([
+            'message' => 'Berhasil Update',
+            'data_student' => $student
+        ], 200);
+    }
+
+    public function delete($id)
+    {
+        $student = Student::find($id)->delete();
+        return response()->json([
+            'message' => 'Berhasil hapus'
+        ], 200);
+    }
 }
