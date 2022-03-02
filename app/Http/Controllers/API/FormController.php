@@ -63,4 +63,26 @@ class FormController extends Controller
             'message' => 'Berhasil hapus'
         ], 200);
     }
+
+    public function show(Request $request)
+    {
+        $perPage = $request->get('per_page');
+
+        $students = Student::paginate($perPage);
+        foreach ($students as $key => $student) {
+            $data['id'] = $student->id;
+            $data['nama'] = $student->nama;
+            $data['alamat'] = $student->alamat;
+            $data['no_telp'] = $student->no_telp;
+            $datas[] = $data;
+        }
+
+        $dataStudent['data'] = $datas;
+        $dataStudent['next_page_url'] = $students->nextPageUrl();
+
+        return response()->json([
+            'message' => 'success',
+            'data_student' => $dataStudent
+        ], 200);
+    }
 }
