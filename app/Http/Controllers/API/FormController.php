@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\StudentResource;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -31,9 +32,11 @@ class FormController extends Controller
     public function edit($id)
     {
         $student = Student::find($id);
+        $studentCollection = new StudentResource($student);
+
         return response()->json([
             'message' => 'success',
-            'data_student' => $student
+            'data_student' => $studentCollection
         ], 200);
     }
 
@@ -69,15 +72,16 @@ class FormController extends Controller
         $perPage = $request->get('per_page');
 
         $students = Student::paginate($perPage);
-        foreach ($students as $key => $student) {
-            $data['id'] = $student->id;
-            $data['nama'] = $student->nama;
-            $data['alamat'] = $student->alamat;
-            $data['no_telp'] = $student->no_telp;
-            $datas[] = $data;
-        }
+        $collectionStudent = StudentResource::collection($students);
+        // foreach ($students as $key => $student) {
+        //     $data['id'] = $student->id;
+        //     $data['nama'] = $student->nama;
+        //     $data['alamat'] = $student->alamat;
+        //     $data['no_telp'] = $student->no_telp;
+        //     $datas[] = $data;
+        // }
 
-        $dataStudent['data'] = $datas;
+        $dataStudent['data'] = $collectionStudent;
         $dataStudent['next_page_url'] = $students->nextPageUrl();
 
         return response()->json([
